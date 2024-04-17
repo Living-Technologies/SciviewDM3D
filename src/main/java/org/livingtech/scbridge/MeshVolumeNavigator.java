@@ -19,85 +19,119 @@ import java.nio.IntBuffer;
 import java.util.TreeMap;
 
 public class MeshVolumeNavigator {
-    SciView sciView;
-    public MeshVolumeNavigator(SciView sv){
+    final SciView sciView;
+    final TreeMap<Integer, Group> meshes;
+    final Volume v;
+
+    final JSlider slider;
+    final JButton startStop;
+
+    public MeshVolumeNavigator(SciView sv, TreeMap<Integer, Group> meshes, Volume v){
         sciView = sv;
+        this.meshes = meshes;
+        this.v = v;
+        slider = new JSlider(meshes.firstKey(), meshes.lastKey());
+        startStop = new JButton("start");
+
     }
-    public void buildUI(TreeMap<Integer, Group> meshes, Volume v){
+
+    public void sliderChanged(ChangeEvent e){
+        if(slider.isEnabled() && !slider.getValueIsAdjusting()){
+            int frame = slider.getValue();
+            meshes.values().forEach(m -> m.setVisible(false));
+            meshes.get(frame).setVisible(true);
+            v.goToTimepoint(frame);
+        }
+    }
+
+    public void start(){
+        startStop.setText("stop");
+        slider.setEnabled(false);
+        new Thread( () -> {
+            Renderer r = sciView.getSceneryRenderer();
+            if (r == null) return;
+            ImageStack stack = null;
+            for (Integer frame : meshes.keySet()) {
+                meshes.values().forEach(m -> m.setVisible(false));
+                meshes.get(frame).setVisible(true);
+                v.goToTimepoint(frame);
+                slider.setValue(frame);
+                try {
+                    Thread.sleep(500);
+                } catch (InterruptedException e) {
+                    throw new RuntimeException(e);
+                }
+                r.screenshot("test-" + frame + ".png", true);
+                RenderedImage img = r.requestScreenshot();
+                byte[] data = img.getData();
+                if(data == null) continue;
+                IntBuffer buf = ByteBuffer.wrap(data).asIntBuffer();
+                int[] pxls = new int[img.getWidth() * img.getHeight()];
+                buf.get(pxls);
+                ImageProcessor proc = new ColorProcessor(img.getWidth(), img.getHeight(), pxls);
+                if (stack == null) {
+                    stack = new ImageStack(img.getWidth(), img.getHeight());
+
+                }
+                stack.addSlice(proc);
+                if(startStop.getText().equals("stopping")){
+                    break;
+                }
+            }
+
+            if (stack != null) {
+                new ImagePlus("recorded", stack).show();
+            }
+            EventQueue.invokeLater(()->{
+                startStop.setText("start");
+                slider.setEnabled(true);
+            });
+        }).start();
+    }
+    public void stop(){
+        startStop.setText("stopping");
+    }
+    public void hideMeshes(){
+        meshes.values().stream().forEach(g->g.setVisible(false));
+    }
+    public void buildUI(){
 
         JDialog controlFrame = new JDialog((Frame)null, "Mesh/Volume navigator");
         JPanel panel = new JPanel(new BorderLayout());
+        JButton hide = new JButton("hide meshes");
+        hide.addActionListener(evt->{
+            hideMeshes();
+        });
 
-        JButton but = new JButton("start");
-        panel.add(but, BorderLayout.SOUTH);
-        JSlider slider = new JSlider(meshes.firstKey(), meshes.lastKey());
+        panel.add(startStop, BorderLayout.EAST);
+        panel.add(hide, BorderLayout.WEST);
         panel.add(slider, BorderLayout.NORTH);
+        JButton remove = new JButton("remove");
+        panel.add(remove, BorderLayout.SOUTH);
         slider.addChangeListener(new ChangeListener() {
             @Override
             public void stateChanged(ChangeEvent e) {
-                if(slider.isEnabled() && !slider.getValueIsAdjusting()){
-                    int frame = slider.getValue();
-                    meshes.values().forEach(m -> m.setVisible(false));
-                    meshes.get(frame).setVisible(true);
-                    v.goToTimepoint(frame);
-                };
+                sliderChanged(e);
             }
         });
 
-        but.addActionListener(evt->{
-            if(but.getText().equals("stop")){
-                but.setText("stopping");
-                return;
+        startStop.addActionListener(evt->{
+            if(startStop.getText().equals("stop")){
+                stop();
             }
-            if(!but.getText().equals("start")){
-                return;
+            if(startStop.getText().equals("start")){
+                start();
             }
-            but.setText("stop");
-            slider.setEnabled(false);
-            new Thread( () -> {
-                Renderer r = sciView.getSceneryRenderer();
-                if (r == null) return;
-                ImageStack stack = null;
-                for (Integer frame : meshes.keySet()) {
-
-                    meshes.values().forEach(m -> m.setVisible(false));
-                    meshes.get(frame).setVisible(true);
-                    v.goToTimepoint(frame);
-                    slider.setValue(frame);
-                    try {
-                        Thread.sleep(500);
-                    } catch (InterruptedException e) {
-                        throw new RuntimeException(e);
-                    }
-                    r.screenshot("test-" + frame + ".png", true);
-                    RenderedImage img = r.requestScreenshot();
-                    byte[] data = img.getData();
-                    if(data == null) continue;
-                    IntBuffer buf = ByteBuffer.wrap(data).asIntBuffer();
-                    int[] pxls = new int[img.getWidth() * img.getHeight()];
-                    buf.get(pxls);
-                    ImageProcessor proc = new ColorProcessor(img.getWidth(), img.getHeight(), pxls);
-                    if (stack == null) {
-                        stack = new ImageStack(img.getWidth(), img.getHeight());
-
-                    }
-                    stack.addSlice(proc);
-                    if(but.getText().equals("stopping")){
-                        break;
-                    }
-                }
-                if (stack != null) {
-                    new ImagePlus("recorded", stack).show();
-                }
-                but.setText("start");
-                slider.setEnabled(true);
-            }).start();
-
         });
 
         controlFrame.setContentPane(panel);
         controlFrame.pack();
         controlFrame.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
         controlFrame.setVisible(true);
+
+        remove.addActionListener(evt->{
+            meshes.values().forEach(v::removeChild);
+            controlFrame.setVisible(false);
+        });
     }
 }

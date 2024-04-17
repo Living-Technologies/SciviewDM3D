@@ -129,8 +129,8 @@ public class MeshVolumeDemo implements Command {
                 meshes.put(frame, g);
                 g.setVisible(false);
             }
-            MeshVolumeNavigator navigator = new MeshVolumeNavigator(sciView);
-            navigator.buildUI(meshes, v);
+            MeshVolumeNavigator navigator = new MeshVolumeNavigator(sciView, meshes, v);
+            navigator.buildUI();
 
 
         } catch (IOException e) {
