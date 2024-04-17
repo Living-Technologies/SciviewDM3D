@@ -1,0 +1,166 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+
+	<parent>
+		<groupId>org.scijava</groupId>
+		<artifactId>pom-scijava</artifactId>
+		<version>37.0.0</version>
+		<relativePath />
+	</parent>
+
+	<groupId>org.livingtech</groupId>
+	<artifactId>dm3d-sciview-bridge</artifactId>
+	<version>0.2.1</version>
+
+	<name>dm3d-sciview-bridge</name>
+	<description>A plugin for loading DM3D meshes into sciview.</description>
+	<url>http://github.com/Living-Technologies</url>
+	<inceptionYear>2024</inceptionYear>
+	<organization>
+		<name>org.livingtech</name>
+		<url>https://github.com/Living-Technologies</url>
+	</organization>
+	<licenses>
+		<license>
+			<name>MIT License</name>
+			<distribution>https://opensource.org/license/mit</distribution>
+		</license>
+	</licenses>
+
+	<developers>
+		<developer>
+			<id>odinsbane</id>
+			<name>Smith, MB</name>
+			<url>https://orangepalantir.org</url>
+			<roles>
+				<role>founder</role>
+				<role>lead</role>
+				<role>developer</role>
+				<role>debugger</role>
+				<role>reviewer</role>
+				<role>support</role>
+				<role>maintainer</role>
+			</roles>
+		</developer>
+	</developers>
+	<!-- TODO- -->
+	<contributors>
+		<contributor>
+			<name>Con T. Ributor</name>
+			<url>https://moreawesomewebsite.com</url>
+			<properties><id>con-t-ributor</id></properties>
+		</contributor>
+	</contributors>
+
+	<!-- Where can your users go if they have questions? The ImageJ forums are a great starting point! -->
+	<mailingLists>
+		<mailingList>
+			<name>Image.sc Forum</name>
+			<archive>https://forum.image.sc/</archive>
+		</mailingList>
+	</mailingLists>
+
+	<scm>
+		<connection>scm:git:git://github.com/Living-Technologies/SciviewDM3D</connection>
+		<developerConnection>scm:git:git:git@github.com/Living-Technologies/SciviewDM3D</developerConnection>
+		<tag>HEAD</tag>
+		<url>https://github.com/Living-Technologies/SciviewDM3D</url>
+	</scm>
+	<issueManagement>
+		<system>GitHub Issues</system>
+		<url>https://github.com/scenerygraphics/minimal-sciview-example-project/issues</url>
+	</issueManagement>
+	<properties>
+		<package-name>sc.iview</package-name>
+
+		<license.licenseName>MIT</license.licenseName>
+		<license.copyrightOwners>UMC Utrecht.</license.copyrightOwners>
+		<license.projectName>DM3D Sciview Bridge.</license.projectName>
+
+		<sciview.version>0.4.0</sciview.version>
+		<scenery.version>0.11.0</scenery.version>
+
+		<kotlin.version>1.9.22</kotlin.version>
+		<kotlinx-coroutines-core.version>1.8.0</kotlinx-coroutines-core.version>
+		<kotlin.compiler.jvmTarget>21</kotlin.compiler.jvmTarget>
+
+		<!-- slightly evil, but necessary until pom-scijava allows bytecode versions > 51 (Java 8) -->
+		<enforcer.skip>true</enforcer.skip>
+
+		<exec.mainClass>org.livingtech.scbridge.MeshVolumeDemo</exec.mainClass>
+	</properties>
+
+	<dependencies>
+
+		<dependency>
+			<groupId>sc.iview</groupId>
+			<artifactId>sciview</artifactId>
+			<version>${sciview.version}</version>
+		</dependency>
+
+		<!-- ImageJ dependencies -->
+		<dependency>
+			<groupId>net.imagej</groupId>
+			<artifactId>imagej</artifactId>
+		</dependency>
+
+		<!-- SciJava dependencies -->
+		<dependency>
+			<groupId>org.scijava</groupId>
+			<artifactId>scijava-common</artifactId>
+		</dependency>
+
+		<!-- Test scope dependencies -->
+		<dependency>
+			<groupId>junit</groupId>
+			<artifactId>junit</artifactId>
+			<scope>test</scope>
+		</dependency>
+
+		<!-- This is the implementation for the logging facility uses. If you intend to ship this as a sciview plugin,
+		     please comment this out, as sciview/Fiji ship their own logger implementations. -->
+		<dependency>
+			<groupId>org.slf4j</groupId>
+			<artifactId>slf4j-simple</artifactId>
+			<scope>runtime</scope>
+		</dependency>
+		<dependency>
+			<groupId>org.livingtech</groupId>
+			<artifactId>dm3d</artifactId>
+			<version>1.0.0</version>
+		</dependency>
+        <dependency>
+			<groupId>graphics.scenery</groupId>
+			<artifactId>scenery</artifactId>
+			<version>${scenery.version}</version>
+		</dependency>
+	</dependencies>
+
+	<build>
+		<plugins>
+			<!-- scenery and sciview work with Java 21 upwards, we set the respective versions for the compiler here -->
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-compiler-plugin</artifactId>
+				<configuration>
+					<source>21</source>
+					<target>21</target>
+				</configuration>
+			</plugin>
+		</plugins>
+	</build>
+
+	<repositories>
+		<!-- The jitpack repository is included if you want to use git commit hash-based versions -->
+		<repository>
+			<id>jitpack.io</id>
+			<url>https://jitpack.io</url>
+		</repository>
+		<!-- The scijava maven repository is necessary for all scijava-related packages -->
+		<repository>
+			<id>scijava.public</id>
+			<url>https://maven.scijava.org/content/groups/public</url>
+		</repository>
+	</repositories>
+</project>
