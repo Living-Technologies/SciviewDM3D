@@ -62,7 +62,6 @@ import deformablemesh.track.Track;
 import static sc.iview.commands.MenuWeights.DEMO;
 
 /**
- * Make a sphere and say hello.
  *
  * The annotations in the next line define where this plugin will appear in sciview's menu, and under which label.
  *
@@ -112,8 +111,7 @@ public class MeshVolumeDemo implements Command {
             int maxFrame = tracks.stream().mapToInt(Track::getLastFrame).max().orElse(-1);
             Vector3i dims = v.getDimensions();
             Vector3f scales = v.spatial().getScale();
-            //TODO the scale factor is squared in the z-dimension will be fixed soon
-            Dm3dMeshToScMesh scaler = new Dm3dMeshToScMesh(dims.x, dims.y, dims.z, scales.x, scales.y, Math.sqrt(scales.z));
+            Dm3dMeshToScMesh scaler = new Dm3dMeshToScMesh(dims.x, dims.y, dims.z, scales.x, scales.y, scales.z);
             for(int frame = 0; frame<=maxFrame; frame++){
                 Group g = new Group();
                 for(Track trk : tracks){
@@ -143,7 +141,7 @@ public class MeshVolumeDemo implements Command {
     public static void main(final String... args) throws Exception {
         ImageJ ij = new ImageJ();
         ij.ui().getDefaultUI().show();
-
+        /*
         try {
             ImagePlus plus = FileInfoVirtualStack.openVirtual(
                     Paths.get("sample.tif").toAbsolutePath().toString()
@@ -157,8 +155,7 @@ public class MeshVolumeDemo implements Command {
 
 
             Volume v = sv.addVolume(img);
-            //TODO remove that square when scenery gets updated.
-            v.spatial().setScale(new Vector3f(sx, sy, sz * sz));
+            v.spatial().setScale(new Vector3f(sx, sy, sz ));
             v.setMaxDisplayRange(2000);
             v.setMinDisplayRange(400);
         } catch(Exception e){
@@ -166,6 +163,6 @@ public class MeshVolumeDemo implements Command {
             //never starts ?!
             e.printStackTrace();
         }
-
+        */
 	}
 }

@@ -1,6 +1,7 @@
 package org.livingtech.scbridge;
 
 import deformablemesh.geometry.DeformableMesh3D;
+import deformablemesh.geometry.RayCastMesh;
 import graphics.scenery.Mesh;
 
 import java.nio.FloatBuffer;
@@ -42,7 +43,7 @@ public class TestMeshes {
         };
         return new DeformableMesh3D(pts, connections, triangles);
     }
-    static Mesh scTet(){
+    public static Mesh scTet(){
         float[][] pts = {
                 {-1, 0, 1},
                 {-1, 0, -1},
@@ -75,7 +76,7 @@ public class TestMeshes {
         m.geometry().setDirty(true);
         return m;
     }
-    static Mesh twoTriangles(){
+    public static Mesh twoTriangles(){
         float[] pts = {
                 -1, -1, 0,
                 1, -1, 0,
@@ -116,5 +117,11 @@ public class TestMeshes {
         m.geometry().setTexcoords(uvb);
         m.geometry().setDirty(true);
         return m;
+    }
+
+    public static Mesh generateSphere(int divisions){
+        DeformableMesh3D sphere = RayCastMesh.sphereRayCastMesh(divisions);
+        Dm3dMeshToScMesh adapter = new Dm3dMeshToScMesh(100, 100,100, 1, 1, 1);
+        return adapter.convertMesh(sphere);
     }
 }

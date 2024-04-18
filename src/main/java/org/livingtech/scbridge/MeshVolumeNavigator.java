@@ -1,5 +1,6 @@
 package org.livingtech.scbridge;
 
+import deformablemesh.gui.SwingJSTerm;
 import graphics.scenery.Group;
 import graphics.scenery.backends.RenderedImage;
 import graphics.scenery.backends.Renderer;
