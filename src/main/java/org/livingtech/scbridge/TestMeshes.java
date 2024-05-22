@@ -1,6 +1,7 @@
 package org.livingtech.scbridge;
 
 import deformablemesh.geometry.DeformableMesh3D;
+import deformablemesh.geometry.Node3D;
 import deformablemesh.geometry.RayCastMesh;
 import graphics.scenery.Mesh;
 
@@ -8,7 +9,11 @@ import java.nio.FloatBuffer;
 import java.nio.IntBuffer;
 
 public class TestMeshes {
-    static DeformableMesh3D getTetrahedron(){
+    public static Mesh convert(DeformableMesh3D mesh){
+        Dm3dMeshToScMesh convert = new Dm3dMeshToScMesh(1, 1, 1, 1, 1, 1);
+        return convert.convertMesh(mesh);
+    }
+    public static DeformableMesh3D getTetrahedron(){
 
         double[] pts = {
                 -1, 0, 1,
@@ -121,7 +126,23 @@ public class TestMeshes {
 
     public static Mesh generateSphere(int divisions){
         DeformableMesh3D sphere = RayCastMesh.sphereRayCastMesh(divisions);
-        Dm3dMeshToScMesh adapter = new Dm3dMeshToScMesh(100, 100,100, 1, 1, 1);
+        Dm3dMeshToScMesh adapter = new Dm3dMeshToScMesh(1, 1,1, 1, 1, 1);
         return adapter.convertMesh(sphere);
     }
+
+    public static Mesh barbell(int divisions){
+        DeformableMesh3D sphere = RayCastMesh.sphereRayCastMesh(divisions);
+        for(Node3D node: sphere.nodes){
+            double[] pos = node.getCoordinates();
+            double z = pos[2];
+            double theta = Math.PI/2 *( 1 + z);
+            double f = 0.8*Math.abs(Math.cos(theta)) + 0.2;
+            double dx = f*pos[0];
+            double dy = f*pos[1];
+            node.setPosition(new double[]{dx, dy, z});
+        }
+        Dm3dMeshToScMesh adapter = new Dm3dMeshToScMesh(1, 1,1, 1, 1, 1);
+        return adapter.convertMesh(sphere);
+    }
+
 }

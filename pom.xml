@@ -78,8 +78,8 @@
 		<license.copyrightOwners>UMC Utrecht.</license.copyrightOwners>
 		<license.projectName>DM3D Sciview Bridge.</license.projectName>
 
-		<sciview.version>0.4.0</sciview.version>
-		<scenery.version>0.11.1</scenery.version>
+		<sciview.version>0.4.1-SNAPSHOT</sciview.version>
+		<scenery.version>0.11.3-SNAPSHOT</scenery.version>
 
 		<kotlin.version>1.9.22</kotlin.version>
 		<kotlinx-coroutines-core.version>1.8.0</kotlinx-coroutines-core.version>

@@ -2,6 +2,7 @@ package org.livingtech.scbridge;
 
 import deformablemesh.gui.SwingJSTerm;
 import graphics.scenery.Group;
+import graphics.scenery.Node;
 import graphics.scenery.backends.RenderedImage;
 import graphics.scenery.backends.Renderer;
 import graphics.scenery.volumes.Volume;
@@ -17,6 +18,7 @@ import javax.swing.event.ChangeListener;
 import java.awt.*;
 import java.nio.ByteBuffer;
 import java.nio.IntBuffer;
+import java.util.Iterator;
 import java.util.TreeMap;
 
 public class MeshVolumeNavigator {
@@ -131,7 +133,14 @@ public class MeshVolumeNavigator {
         controlFrame.setVisible(true);
 
         remove.addActionListener(evt->{
-            meshes.values().forEach(v::removeChild);
+            Iterator<Group> iter = meshes.values().iterator();
+            while(iter.hasNext()){
+                Node node = iter.next();
+                boolean publish = ! iter.hasNext();
+                sciView.deleteNode(node, publish);
+            }
+
+            //meshes.values().forEach(g -> { sciView.deleteNode(g, false);});
             controlFrame.setVisible(false);
         });
     }

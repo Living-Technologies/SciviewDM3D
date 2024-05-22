@@ -1,6 +1,5 @@
 package org.livingtech.scbridge;
 
-import deformablemesh.MeshImageStack;
 import deformablemesh.geometry.CurvatureCalculator;
 import deformablemesh.geometry.DeformableMesh3D;
 import deformablemesh.geometry.Triangle3D;
@@ -36,6 +35,13 @@ public class Dm3dMeshToScMesh {
             sz = SCALE/dz;
         }
 
+    /**
+     * No arguments... no scaling.
+     */
+    public Dm3dMeshToScMesh(){
+            this(1, 1, 1, 1, 1, 1);
+        }
+
         public Dm3dMeshToScMesh(int px, int py, int pz, double dx, double dy, double dz){
             double lx = dx*px;
             double ly = dy*py;
@@ -52,15 +58,15 @@ public class Dm3dMeshToScMesh {
             sy = SCALE/dy;
             sz = SCALE/dz;
         }
-        public double[] getImageCoordinates(double[] r) {
-            return new double[] {
-                    (r[0] + ox)*sx,
-                    (r[1] + oy)*sy,
-                    (r[2] + oz)*sz
-            };
+    public double[] getImageCoordinates(double[] r) {
+        return new double[] {
+                (r[0] + ox)*sx,
+                (r[1] + oy)*sy,
+                (r[2] + oz)*sz
+        };
 
-        }
-    Mesh convertMesh(DeformableMesh3D mesh){
+    }
+    public Mesh convertMesh(DeformableMesh3D mesh){
 
         Mesh remesh = new Mesh();
 
