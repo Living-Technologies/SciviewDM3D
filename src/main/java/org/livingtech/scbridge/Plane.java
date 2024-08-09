@@ -15,17 +15,26 @@ import java.util.List;
 public class Plane {
     final SciView context;
     static final Vector3fc up = new Vector3f(0, 0, 1);
-    Vector3f normal = new Vector3f(0, 0, 1);
-    Vector3f pos = new Vector3f(0f, 0f, 0f);
+    private Vector3f normal = new Vector3f(0, 0, 1);
+    private Vector3f pos = new Vector3f(0f, 0f, 0f);
     record Points(Vector3fc a, Vector3fc b, Vector3fc c, Vector3fc d) implements Iterable<Vector3fc> {
         @Override
         public Iterator<Vector3fc> iterator() {
             return List.of(a, b, c, d).iterator();
         }
     }
-    final Points points;
-    Mesh mesh;
+    private final Points points;
+    private Mesh mesh;
 
+    /**
+     * Creates a new plane, and adds it to the sciview context.
+     *
+     * The plane is a set of 4 triangle that make a square (forward and
+     * backward facing).
+     *
+     * @param context This is needed for updating the mesh.
+     * @param length the size of the square to represent this plane.
+     */
     public Plane(SciView context, float length) {
         points = new Points(
                 new Vector3f(-length, -length, 0),
@@ -35,20 +44,36 @@ public class Plane {
         );
         this.context = context;
         update();
-
     }
 
+    /**
+     * Creates a duplicate mesh with the appropriate style information.
+     * This will override any changes made from the UI. Eg. color
+     *
+     * That is one disadvantage of remaking the mesh each time.
+     *
+     * @return
+     */
     Mesh newMesh() {
         Mesh m = new Mesh("furrow plane");
         m.material().setDiffuse(new Vector3f(0, 0, 1f));
         return m;
     }
 
+    /**
+     * Sets the normal value and updates the geometry in the sciview context.
+     * @param n xyz direction. Assumed to be normalized.
+     */
     public void setNormal(double[] n) {
         normal = new Vector3f((float) n[0], (float) n[1], (float) n[2]);
         update();
     }
 
+    /**
+     * Displaces the center of the mesh by the provided values.
+     *
+     * @param delta
+     */
     public void move(double[] delta) {
         pos = new Vector3f(
                 pos.x + (float) delta[0],
@@ -57,6 +82,12 @@ public class Plane {
         update();
     }
 
+    /**
+     * Calculates the axis/angle required to rotate the normal (front facing)
+     * of the plane along the desired normal.
+     *
+     * @return a quaternoin derived from the axis-angle rotation.
+     */
     Quaternionf calculateRotationTransform() {
         Vector3f x = up.cross(normal, new Vector3f());
 
@@ -75,6 +106,13 @@ public class Plane {
         return new Quaternionf(new AxisAngle4f(angle, x));
     }
 
+    /**
+     * Updates the mesh geometry. Currently removes the old mesh
+     * and adds a new mesh with the correct geometry.
+     *
+     * TODO replace with a transform that gets updated, since
+     *      the fundamental structure never changes.
+     */
     public void update() {
         int vertexes = 4;
         int triangles = 4;
