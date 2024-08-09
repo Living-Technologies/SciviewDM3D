@@ -20,8 +20,8 @@ public class ControlledPlaneDemo {
     public static void main(String[] args) throws Exception {
         SciView sv = SciView.create();
 
-        Plane p = new Plane(sv, 1.0f);
-
+        Plane p = new Plane(1.0f);
+        sv.addNode(p.getMesh());
 
         FurrowInput fi = new FurrowInput();
         fi.setMarkFromNormal(new double[]{0, 0, 1});
