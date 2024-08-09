@@ -1,6 +1,5 @@
 package org.livingtech.scbridge;
 
-import deformablemesh.gui.SwingJSTerm;
 import graphics.scenery.Group;
 import graphics.scenery.Node;
 import graphics.scenery.backends.RenderedImage;
@@ -46,7 +45,14 @@ public class MeshVolumeNavigator {
             v.goToTimepoint(frame);
         }
     }
+    static int getPixel(int i, byte[] bytes){
 
+        int b = bytes[4*i];
+        int g = bytes[4*i + 1];
+        int r = bytes[4*i + 2];
+        return (r<<16) + (g << 8) + b;
+
+    }
     public void start(){
         startStop.setText("stop");
         slider.setEnabled(false);
@@ -64,17 +70,21 @@ public class MeshVolumeNavigator {
                 } catch (InterruptedException e) {
                     throw new RuntimeException(e);
                 }
+
                 r.screenshot("test-" + frame + ".png", true);
                 RenderedImage img = r.requestScreenshot();
                 byte[] data = img.getData();
                 if(data == null) continue;
-                IntBuffer buf = ByteBuffer.wrap(data).asIntBuffer();
-                int[] pxls = new int[img.getWidth() * img.getHeight()];
-                buf.get(pxls);
+
+                int n = img.getWidth()*img.getHeight();
+                int[] pxls = new int[n];
+                for(int i = 0; i<n; i++){
+                    pxls[i] = getPixel(i, data);
+                }
                 ImageProcessor proc = new ColorProcessor(img.getWidth(), img.getHeight(), pxls);
+
                 if (stack == null) {
                     stack = new ImageStack(img.getWidth(), img.getHeight());
-
                 }
                 stack.addSlice(proc);
                 if(startStop.getText().equals("stopping")){
