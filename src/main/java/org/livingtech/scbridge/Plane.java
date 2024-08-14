@@ -73,10 +73,9 @@ public class Plane {
         Quaternionf rot = calculateRotationTransform();
 
         for (Vector3fc pt : points) {
-            Vector3f transformed = rot.transform(new Vector3f(pt)).add(pos);
-            position.put(transformed.x);
-            position.put(transformed.y);
-            position.put(transformed.z);
+            position.put(pt.x());
+            position.put(pt.y());
+            position.put(pt.z());
 
             normals.put(normal.x);
             normals.put(normal.y);
@@ -152,5 +151,7 @@ public class Plane {
     public void update() {
         mesh.spatial().setRotation(calculateRotationTransform());
         mesh.spatial().setPosition(pos);
+        mesh.geometry().setDirty(true);
+
     }
 }
