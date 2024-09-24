@@ -7,7 +7,6 @@ import graphics.scenery.controls.InputHandler;
 import graphics.scenery.controls.SwingMouseAndKeyHandler;
 import graphics.scenery.controls.behaviours.SelectCommand;
 import kotlin.jvm.functions.Function0;
-import org.jogamp.java3d.utils.picking.PickResult;
 import org.joml.Vector3f;
 import org.scijava.command.Command;
 import org.scijava.command.InteractiveCommand;
@@ -163,7 +162,6 @@ public class ControlledPlaneDemo implements Command {
                 @Override
                 public void click(int i, int i1) {
                     if(!disabled.get()) {
-
                         for (String b : behaviours.keySet()) {
                             ih.removeBehaviour(b);
                         }

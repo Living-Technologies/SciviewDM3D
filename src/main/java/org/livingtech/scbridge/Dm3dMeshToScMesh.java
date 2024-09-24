@@ -83,9 +83,9 @@ public class Dm3dMeshToScMesh {
             double[] cn = {mesh.positions[3*i], mesh.positions[3*i+1], mesh.positions[3*i+2]};
 
             double[] pt = getImageCoordinates(cn);
-            pos.put((float)pt[0]);
-            pos.put((float)pt[1]);
-            pos.put((float)pt[2]);
+            pos.put((float)pt[0] - 0.5f);
+            pos.put((float)pt[1] - 0.5f);
+            pos.put((float)pt[2] - 0.5f);
             double[] norm = cc.getNormal(i);
             normals.put((float)norm[0]);
             normals.put((float)norm[1]);

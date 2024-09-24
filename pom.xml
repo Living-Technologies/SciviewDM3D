@@ -5,7 +5,7 @@
 	<parent>
 		<groupId>org.scijava</groupId>
 		<artifactId>pom-scijava</artifactId>
-		<version>37.0.0</version>
+		<version>38.0.1</version>
 		<relativePath />
 	</parent>
 
@@ -110,6 +110,10 @@
 			<groupId>org.scijava</groupId>
 			<artifactId>scijava-common</artifactId>
 		</dependency>
+		<dependency>
+			<groupId>net.imglib2</groupId>
+			<artifactId>imglib2-mesh</artifactId>
+		</dependency>
 
 		<!-- Test scope dependencies -->
 		<dependency>
@@ -128,7 +132,7 @@
 		<dependency>
 			<groupId>org.livingtech</groupId>
 			<artifactId>dm3d</artifactId>
-			<version>1.2.1-SNAPSHOT</version>
+			<version>1.3.1-SNAPSHOT</version>
 		</dependency>
         <dependency>
 			<groupId>graphics.scenery</groupId>
@@ -149,8 +153,8 @@
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-compiler-plugin</artifactId>
 				<configuration>
-					<source>21</source>
-					<target>21</target>
+					<source>16</source>
+					<target>16</target>
 				</configuration>
 			</plugin>
 		</plugins>
